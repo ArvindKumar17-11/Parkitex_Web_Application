@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Signup - Parkitx</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1 style="color: #2e7d32; text-align: center; margin-bottom: 20px;">Admin Signup</h1>
+        <form id="signupForm" class="login-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="login.html">Login</a></p>
+        <p style="text-align: center; margin-top: 10px;"><a href="/">← Back to Main Site</a></p>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate password match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Validate password strength
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return;
+            }
+
+            try {
+                console.log('Sending signup request with data:', { name, email }); // Debug log
+
+                const response = await fetch('http://localhost:3000/api/admin/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+                console.log('Signup response:', data); // Debug log
+
+                if (data.success) {
+                    alert('Signup successful! Please login.');
+                    window.location.href = 'login.html';
+                } else {
+                    alert(data.error || 'Signup failed');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('Signup failed. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html> 
